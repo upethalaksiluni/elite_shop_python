@@ -9,12 +9,10 @@ def add_to_cart(product_id, quantity=1):
             print(f"Product with ID {product_id} not found!")
             return False
 
-        # Check if enough stock is available
         if product["quantity"] < quantity:
             print(f"Sorry! Only {product['quantity']} units of '{product['name']}' available in stock.")
             return False
 
-        # Check if product already in cart
         for cart_item in cart_items:
             if cart_item["id"] == str(product_id):
                 if product["quantity"] < (cart_item["quantity"] + quantity):
@@ -25,7 +23,6 @@ def add_to_cart(product_id, quantity=1):
                 print(f"Updated quantity for '{product['name']}' in cart!")
                 return True
 
-        # Add new item to cart
         cart_item = {
             "id": product["id"],
             "name": product["name"],

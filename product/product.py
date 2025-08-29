@@ -3,10 +3,6 @@ cart_items = []
 VAT = 0.18  # 18% VAT
 
 
-# Utility Functions (must be defined first)
-
-
-# Product Module Functions
 def add_products(product_id, name, price, quantity=0, description=""):
     """Add a product to the store with enhanced fields"""
     try:
