@@ -1,56 +1,94 @@
-# id, name, price, quantity
-
-product_id = []
-product_name = []
-product_price = []
-product_quantity = []
-product_description = []
+products = []
+cart_items = []
+VAT = 0.18  # 18% VAT
 
 
-def add_products():
-    while True:
-
-        id = int(input("enter a id : "))
-        name = input("Enter a product name : ")
-        price = input("Enter a product price : ")
-        quantity = int(input("Enter a product quantity : "))
-        description = input("Enter a product description : ")
-
-        product_id.append(id)
-        product_name.append(name)
-        product_price.append(price)
-        product_quantity.append(quantity)
-        product_description.append(description)
-
-        con = input("if you want to add product press 'Y' : ")
-
-        if con == "N":
-            break
+# Utility Functions (must be defined first)
 
 
-def remove_product():
-    remove_products = int(input("Enter a id for remove product : "))
+# Product Module Functions
+def add_products(product_id, name, price, quantity=0, description=""):
+    """Add a product to the store with enhanced fields"""
+    try:
+        # Check if product ID already exists
+        for product in products:
+            if product["id"] == str(product_id):
+                print(f"Product ID {product_id} already exists!")
+                return False
 
-    product_id.pop(remove_products - 1)
-    product_name.append(remove_products - 1)
-    product_price.append(remove_products - 1)
-    product_quantity.append(remove_products - 1)
-    product_description.append(remove_products - 1)
+        product = {
+            "id": str(product_id),
+            "name": name,
+            "price": float(price),
+            "quantity": int(quantity),
+            "description": description
+        }
+        products.append(product)
+        print(f"Product '{name}' added successfully!")
+        return True
+    except Exception as e:
+        print(f"Error adding product: {e}")
+        return False
+
+
+def remove_products(product_id):
+    """Remove a product from the store"""
+    try:
+        for i, product in enumerate(products):
+            if product["id"] == str(product_id):
+                removed_product = products.pop(i)
+                print(f"Product '{removed_product['name']}' removed successfully!")
+                return True
+        print(f"Product with ID {product_id} not found!")
+        return False
+    except Exception as e:
+        print(f"Error removing product: {e}")
+        return False
 
 
 def view_products():
-    lenth = int(len(product_id))
-    for pro_count in range(lenth):
-        print(
-            f"product id is = {product_id[pro_count]} product name is = {product_name[pro_count]} product price is = {product_price[pro_count]} product quantity is = {product_quantity[pro_count]}  product description is = {product_description[pro_count]} ")
+    """Display all products in the store with enhanced information"""
+    try:
+        if not products:
+            print("No products available in the store.")
+            return
+
+        print("\n=== ELITE SUPER STORE PRODUCTS ===")
+        print(f"{'ID':<5} {'Name':<20} {'Price':<10} {'Stock':<8} {'Description':<30}")
+        print("-" * 75)
+        for product in products:
+            description = product['description'][:27] + "..." if len(product['description']) > 30 else product[
+                'description']
+            print(
+                f"{product['id']:<5} {product['name']:<20} ${product['price']:<9.2f} {product['quantity']:<8} {description:<30}")
+        print()
+    except Exception as e:
+        print(f"Error viewing products: {e}")
 
 
-def find_product_by_id(p_id):
-    if p_id in product_id:
-        index = product_id.index(p_id)
-        print(f"Product id: {product_id[p_id - 1]} \n "
-              f"Product Name: {product_name[p_id - 1]} \n "
-              f"Product Price: {product_price[p_id - 1]} \n"
-              f"Product Description: {product_description[p_id - 1]}")
-    else:
-        print("Product not found. Please Try again!!! :(")
+def find_products_by_id(product_id):
+    """Find and return a product by its ID"""
+    try:
+        for product in products:
+            if product["id"] == str(product_id):
+                return product
+        return None
+    except Exception as e:
+        print(f"Error finding product: {e}")
+        return None
+
+
+def update_product_stock(product_id, new_quantity):
+    """Update product stock quantity"""
+    try:
+        product = find_products_by_id(product_id)
+        if product:
+            product["quantity"] = int(new_quantity)
+            print(f"Stock updated for '{product['name']}' to {new_quantity} units")
+            return True
+        else:
+            print(f"Product with ID {product_id} not found!")
+            return False
+    except Exception as e:
+        print(f"Error updating stock: {e}")
+        return False
